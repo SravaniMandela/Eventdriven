@@ -102,3 +102,9 @@ resource "aws_s3_bucket_notification" "thumbnail_notification" {
       aws_lambda_permission.thumbnail_allow_bucket
     ]
 }
+
+resource "aws_cloudwatch_log_group" "thumbnail_cloudwatch" {
+  name = "/aws/lambda/${aws_lambda_function.thumbnail_lambda.function_name}"
+
+  retention_in_days = 3
+}
