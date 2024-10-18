@@ -14,7 +14,7 @@ def lambda_handler(event, context):
     bucket = event["Records"][0]["s3"]["bucket"]["name"]
     key = event["Records"][0]["s3"]["object"]["key"]
 
-    thumbnail_bucket = "cp-thumbnail-image-bucket"
+    thumbnail_bucket = "cp-thumb-nail-image-bucket"
     thumbnail_name, thumbnail_ext = os.path.splitext(key)
     thumbnail_key = f"{thumbnail_name}_thumbnail{thumbnail_ext}"
 
