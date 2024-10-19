@@ -16,21 +16,46 @@ provider "aws" {
     region = var.aws_region
 }
 
+# resource "aws_iam_policy" "thumbnail_s3_policy" {
+#     name = "thumbnail_s3_policy"
+#     policy = jsonencode({
+#         "Version": "2012-10-17",
+#         "Statement": [{
+#             "Effect": "Allow",
+#             "Action": "s3:GetObject",
+#             "Resource": "arn:aws:s3:::cp-origin-image-bucket/*"
+#         }, {
+#             "Effect": "Allow",
+#             "Action": "s3:PutObject",
+#             "Resource": "arn:aws:s3:::cp-thumb-nail-image-bucket/*"
+#         }]
+#     })
+# }
+
 resource "aws_iam_policy" "thumbnail_s3_policy" {
     name = "thumbnail_s3_policy"
     policy = jsonencode({
         "Version": "2012-10-17",
-        "Statement": [{
-            "Effect": "Allow",
-            "Action": "s3:GetObject",
-            "Resource": "arn:aws:s3:::cp-origin-image-bucket/*"
-        }, {
-            "Effect": "Allow",
-            "Action": "s3:PutObject",
-            "Resource": "arn:aws:s3:::cp-thumb-nail-image-bucket/*"
-        }]
+        "Statement": [
+            {
+                "Effect": "Allow",
+                "Action": "s3:GetObject",
+                "Resource": "arn:aws:s3:::cp-origin-image-bucket/*"
+            },
+            {
+                "Effect": "Allow",
+                "Action": "s3:PutObject",
+                "Resource": "arn:aws:s3:::cp-thumb-nail-image-bucket/*"
+            },
+            {
+                "Effect": "Allow",
+                "Action": "s3:ListBucket",
+                "Resource": "arn:aws:s3:::cp-origin-image-bucket"
+            }
+        ]
     })
 }
+
 
 resource "aws_iam_role" "thumbnail_lambda_role" {
     name = "thumbnail_lambda_role"
