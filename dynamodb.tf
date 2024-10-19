@@ -54,3 +54,27 @@ resource "aws_dynamodb_table" "image_metadata_table" {
   }
 }
 
+# Update to add permissions for DynamoDB to the Lambda role
+resource "aws_iam_policy" "thumbnail_dynamodb_policy" {
+  name   = "thumbnail_dynamodb_policy"
+  policy = jsonencode({
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Effect": "Allow",
+        "Action": [
+          "dynamodb:PutItem",        # Allow PutItem action
+          "dynamodb:GetItem"       # (Optional) If you want Lambda to read from DynamoDB as well
+        ],
+        "Resource": "arn:aws:dynamodb:${var.aws_region}:${data.aws_caller_identity.current.account_id}:table/ImageMetadata" 
+      }
+    ]
+  })
+}
+
+# Attach the policy to the Lambda role
+resource "aws_iam_policy_attachment" "thumbnail_dynamodb_policy_attachment" {
+  name       = "thumbnail_dynamodb_policy_attachment"
+  roles      = [aws_iam_role.thumbnail_lambda_role.name]
+  policy_arn = aws_iam_policy.thumbnail_dynamodb_policy.arn
+}
