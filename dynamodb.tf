@@ -54,6 +54,9 @@ resource "aws_dynamodb_table" "image_metadata_table" {
   }
 }
 
+# Retrieve current AWS account information
+data "aws_caller_identity" "current" {}
+
 # Update to add permissions for DynamoDB to the Lambda role
 resource "aws_iam_policy" "thumbnail_dynamodb_policy" {
   name   = "thumbnail_dynamodb_policy"
@@ -64,9 +67,10 @@ resource "aws_iam_policy" "thumbnail_dynamodb_policy" {
         "Effect": "Allow",
         "Action": [
           "dynamodb:PutItem",        # Allow PutItem action
-          "dynamodb:GetItem"       # (Optional) If you want Lambda to read from DynamoDB as well
+          "dynamodb:GetItem",        # (Optional) If you want Lambda to read from DynamoDB as well
+          "dynamodb:UpdateItem"      # (Optional) For updates if required
         ],
-        "Resource": "arn:aws:dynamodb:${var.aws_region}:${data.aws_caller_identity.current.account_id}:table/ImageMetadata" 
+        "Resource": "arn:aws:dynamodb:${var.aws_region}:${data.aws_caller_identity.current.account_id}:table/ImageMetadata"
       }
     ]
   })
